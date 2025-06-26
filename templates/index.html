@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trump Heroes and Villains - Submission</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .btn-radio {
+      margin-bottom: 0.5rem;
+      display: block;
+      text-align: left;
+    }
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    .optional-hint {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body class="p-4">
+  <div class="container">
+    <h1 class="mb-4">Submit a Report</h1>
+
+    <!-- Step 1: Type Selection -->
+    <div id="step-1" class="step active">
+      <p class="mb-3">What are you submitting today?</p>
+      <div class="btn-group-vertical w-100" role="group">
+        <button class="btn btn-outline-primary btn-radio" data-type="person">👤 Report a person</button>
+        <button class="btn btn-outline-primary btn-radio" data-type="document">📄 Upload documentary evidence</button>
+        <button class="btn btn-outline-primary btn-radio" data-type="event">📍 Report a past event</button>
+        <button class="btn btn-outline-primary btn-radio" data-type="urgent">⏱️ Submit time-critical information</button>
+        <button class="btn btn-outline-primary btn-radio" data-type="other">❓ Something else</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Subtype and Prompt -->
+    <div id="step-2" class="step">
+      <div id="subtype-options" class="mb-3"></div>
+      <label for="narrative" class="form-label">Your Report <span class="optional-hint">(you can delete or ignore the prompts below)</span></label>
+      <textarea class="form-control mb-3" id="narrative" rows="6" placeholder="Describe what you saw, what happened, or anything else you want to share..."></textarea>
+
+      <label for="evidence" class="form-label">Upload Supporting Files <span class="optional-hint">(optional)</span></label>
+      <input class="form-control mb-3" type="file" id="evidence" multiple>
+
+      <button class="btn btn-secondary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#identification">Optional: Identify yourself</button>
+      <div class="collapse" id="identification">
+        <div class="card card-body">
+          <label for="name" class="form-label">Name (optional)</label>
+          <input type="text" class="form-control mb-2" id="name">
+
+          <label for="email" class="form-label">Email address (optional)</label>
+          <input type="email" class="form-control mb-2" id="email">
+
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="consent_contact">
+            <label class="form-check-label" for="consent_contact">You may contact me in future if needed</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="consent_public">
+            <label class="form-check-label" for="consent_public">You may publicly acknowledge me in future as a witness</label>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary mt-3" id="submitBtn">Submit Report</button>
+    </div>
+  </div>
+
+<script>
+  const step1 = document.getElementById('step-1');
+  const step2 = document.getElementById('step-2');
+  const subtypeOptions = document.getElementById('subtype-options');
+  const narrative = document.getElementById('narrative');
+
+  const prompts = {
+    person: `\nOptional: What is their name or alias? Where do they work? What did they do?`,
+    document: `\nOptional: What does the file show? When and where was it created, if known?`,
+    event: `\nOptional: What happened? Where and when? Who was involved?`,
+    urgent: `\nOptional: What is about to happen? Where? When? Who is at risk?`,
+    other: `\nOptional: Tell us whatever you think is important to record.`
+  };
+
+  document.querySelectorAll('.btn-radio').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.type;
+      document.querySelectorAll('.btn-radio').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      step1.classList.remove('active');
+      step2.classList.add('active');
+      narrative.value = prompts[type] + "\n\n";
+
+      if (type === 'person') {
+        subtypeOptions.innerHTML = `
+          <label class="form-label">Who are you reporting?</label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="person_type" id="self" value="self">
+            <label class="form-check-label" for="self">I'm a federal worker reporting myself</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="person_type" id="gov_other" value="gov_other">
+            <label class="form-check-label" for="gov_other">I'm reporting a government worker I know</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="person_type" id="private" value="private">
+            <label class="form-check-label" for="private">I'm reporting a private citizen</label>
+          </div>`;
+      } else {
+        subtypeOptions.innerHTML = '';
+      }
+    });
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', async () => {
+    const formData = new FormData();
+
+    const reportType = document.querySelector('.btn-radio.active')?.dataset.type;
+    formData.append('report_type', reportType || '');
+
+    const subtypeRadio = document.querySelector('#subtype-options input[type=radio]:checked');
+    formData.append('subtype', subtypeRadio?.value || '');
+
+    formData.append('narrative', document.getElementById('narrative').value);
+    formData.append('name', document.getElementById('name').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('consent_contact', document.getElementById('consent_contact').checked ? 'on' : '');
+    formData.append('consent_public', document.getElementById('consent_public').checked ? 'on' : '');
+
+    const files = document.getElementById('evidence').files;
+    for (let i = 0; i < files.length; i++) {
+      formData.append('evidence', files[i]);
+    }
+
+    try {
+      const res = await fetch('/submit', {
+        method: 'POST',
+        body: formData
+      });
+
+      const text = await res.text();
+      alert(text);
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+      console.error(err);
+    }
+  });
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
