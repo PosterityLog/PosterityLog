@@ -1,0 +1,51 @@
+body {
+  background-color: #f5f5f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  color: #222;
+  text-align: center;
+}
+
+h1, h2 {
+  margin-top: 0;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button.red {
+  background-color: #c0392b;
+  color: white;
+}
+
+button.blue {
+  background-color: #4169e1;
+  color: white;
+}
+
+button.black {
+  background-color: #1c1c1c;
+  color: white;
+}
+
+button.yellow {
+  background-color: #f1c40f;
+  color: #1c1c1c;
+}
+
+textarea {
+  width: 80%;
+  height: 200px;
+  margin-top: 20px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
