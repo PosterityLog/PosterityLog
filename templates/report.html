@@ -5,22 +5,77 @@
   <title>Posterity Log – Submit a Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #prompt-tag {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      width: 240px;
+      padding: 1.5rem;
+      font-size: 0.95rem;
+      background: url('/static/manila tag.png') no-repeat center center;
+      background-size: cover;
+      color: #3a2f1b;
+      border: 1px solid #c2a77e;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 999;
+    }
+    #prompt-toggle {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      z-index: 1000;
+    }
+    #prompt-tag p {
+      white-space: pre-line;
+      font-family: Georgia, serif;
+    }
+    @media (max-width: 768px) {
+      #prompt-tag {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        background-size: contain;
+        padding: 1rem;
+      }
+    }
+  </style>
   <script defer>
     async function selectCategory(category) {
       document.getElementById('report_type').value = category;
       document.getElementById('report-form-section').scrollIntoView({ behavior: 'smooth' });
+      showPromptForCategory(category);
+    }
+
+    function showPromptForCategory(category) {
+      const intro = "Don't worry if you don’t know everything — just tell us what you can.";
+      const prompts = {
+        'Collaborator': `Who are they? (Name, position, role)\nWhat did they do or say?\nWhen and where?`,
+        'Resister': `Who resisted, and how?\nWhat risks did they face?\nWhat was the outcome?`,
+        'Authoritarian Act': `What happened?\nWas it a raid, censorship, or abuse?\nWhen and where?`,
+        'Whistleblower': `What is about to happen?\nWho is involved?\nWhen and where?\nHow did you learn this?`
+      };
+      const box = document.getElementById('prompt-content');
+      box.textContent = `${intro}\n\n${prompts[category] || ''}`;
+      document.getElementById('prompt-tag').style.display = 'block';
+    }
+
+    function togglePromptTag() {
+      const tag = document.getElementById('prompt-tag');
+      tag.style.display = tag.style.display === 'none' ? 'block' : 'none';
     }
 
     async function confirmRedaction() {
       const originalText = document.getElementById('narrative').value;
-
-      // Call OpenAI API to generate redacted text (mocked here)
       const response = await fetch('/redact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: originalText })
       });
-
       const data = await response.json();
       document.getElementById('redacted-preview').textContent = data.redacted;
       document.getElementById('redaction-section').classList.remove('d-none');
@@ -28,6 +83,11 @@
   </script>
 </head>
 <body class="container py-5">
+  <button id="prompt-toggle" class="btn btn-sm btn-outline-secondary" onclick="togglePromptTag()">Toggle Prompts</button>
+  <div id="prompt-tag">
+    <p id="prompt-content"></p>
+  </div>
+
   <header class="mb-5">
     <h1 class="display-4 text-center">Choose Your Report Type</h1>
     <p class="text-center">Help us preserve the truth. Choose the category that best fits your report.</p>

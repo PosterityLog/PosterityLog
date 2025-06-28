@@ -1,50 +1,56 @@
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet">
+/* === Global === */
 body {
   background-image: url('/static/paper-texture.jpg');
   background-size: cover;
   background-repeat: repeat;
-  font-family: 'Georgia', serif;
+  background-attachment: fixed;
+  font-family: Georgia, 'Libre Baskerville', serif;
   color: #1a1a1a;
   margin: 0;
   padding: 3em 2em;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
+/* === Headings === */
 h1, h2, h3 {
   font-family: 'Impact', 'Arial Black', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 0.5em;
+  text-align: center;
 }
 
 h1 {
-  font-size: 3em;
-  color: #1a1a1a;
-  border-bottom: 2px solid #1a1a1a;
-  padding-bottom: 0.25em;
+  font-size: 3.5em;
+  color: #111;
+  border-bottom: 2px solid #111;
+  padding-bottom: 0.3em;
   margin-bottom: 0.75em;
 }
 
 h2.section-header {
-  font-size: 2em;
+  font-size: 2.2em;
   color: #c0392b;
+  text-align: left;
 }
 
 h3.sub-header {
   font-size: 1.4em;
   color: #003366;
   margin-top: 1em;
+  text-align: left;
 }
 
-a {
-  color: #003366;
-  text-decoration: none;
-  font-weight: bold;
+/* === Paragraphs and Labels === */
+p, label {
+  font-size: 1.1em;
+  max-width: 70ch;
+  margin: 0 auto 1em auto;
+  text-align: center;
 }
 
-a:hover {
-  text-decoration: underline;
-}
-
+/* === Buttons === */
 button {
   font-family: 'Impact', 'Arial Black', sans-serif;
   text-transform: uppercase;
@@ -62,32 +68,47 @@ button.blue { background-color: #4169e1; color: white; }
 button.black { background-color: #1c1c1c; color: white; }
 button.yellow { background-color: #f1c40f; color: #1c1c1c; }
 
+/* === Form Elements === */
 textarea {
   width: 90%;
   height: 200px;
-  margin-top: 20px;
+  margin: 20px auto;
+  display: block;
   padding: 12px;
   font-size: 1em;
   border: 2px solid #1a1a1a;
   background-color: #fffdf7;
+  font-family: Georgia, serif;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+}
+
+/* === Image Grid === */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2em;
+  margin: 3em 0;
 }
 
 img {
   max-width: 100%;
   border: 3px solid #1a1a1a;
-  margin: 1em 0;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+  background-color: #fffef8;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2em;
-  margin-top: 2em;
+.caption {
+  font-size: 0.95em;
+  text-align: center;
+  margin-top: 0.4em;
+  font-style: italic;
+  color: #444;
 }
 
+/* === Divider === */
 hr {
   border: none;
   border-top: 2px solid #1a1a1a;
-  margin: 2em 0;
+  margin: 2em auto;
+  width: 80%;
 }
