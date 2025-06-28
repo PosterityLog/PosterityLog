@@ -114,3 +114,36 @@ if __name__ == '__main__':
         port=5000,
         host='0.0.0.0'
     )
+from flask import jsonify
+import openai
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+@app.route('/redact', methods=['POST'])
+def redact():
+    data = request.get_json()
+    user_text = data.get("text", "")
+
+    prompt = (
+        "You are a redaction assistant for a civic archive.\n"
+        "Your job is to scan user-submitted text for personally identifying information "
+        "such as names, locations, GPS coordinates, emails, and job titles, and redact them. "
+        "Use the placeholder format [Redaction 1], [Redaction 2], etc. "
+        "Keep the rest of the report intact. Do not add commentary.\n\n"
+        f"Text to redact:\n{user_text}\n\nRedacted version:"
+    )
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # or "gpt-3.5-turbo"
+            messages=[
+                {"role": "system", "content": "You redact sensitive information for archival reports."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.2
+        )
+        redacted_text = response.choices[0].message['content'].strip()
+        return jsonify({"redacted": redacted_text})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
