@@ -1,11 +1,15 @@
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet">
+/* === Fonts === */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Spectral&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
 /* === Global === */
 body {
   background-image: url('/static/aged-texture.jpg');
   background-size: cover;
   background-repeat: repeat;
   background-attachment: fixed;
-  font-family: Georgia, 'Libre Baskerville', serif;
+  font-family: 'Spectral', Georgia, serif;
   color: #1a1a1a;
   margin: 0;
   padding: 3em 2em;
@@ -29,6 +33,7 @@ header.hero {
   font-size: 3.5em;
   margin-bottom: 0.25em;
   color: #111;
+  font-family: 'Oswald', sans-serif;
 }
 
 .hero p {
@@ -40,7 +45,7 @@ header.hero {
 
 /* === Headings === */
 h1, h2, h3 {
-  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-family: 'Oswald', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 0.5em;
@@ -76,9 +81,22 @@ p, label {
   text-align: center;
 }
 
+/* === Pull Quotes === */
+.pull-quote {
+  font-family: 'Special Elite', monospace;
+  font-size: 1.2em;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-left: 4px solid #6d2c1c;
+  padding: 1em;
+  margin: 2em auto;
+  max-width: 50ch;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+}
+
 /* === Buttons === */
 button, .btn {
-  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-family: 'Oswald', sans-serif;
   text-transform: uppercase;
   padding: 12px 24px;
   margin: 10px;
@@ -106,7 +124,7 @@ textarea, input[type="text"], input[type="email"], select {
   font-size: 1em;
   border: 2px solid #1a1a1a;
   background-color: #fffdf7;
-  font-family: Georgia, serif;
+  font-family: 'Spectral', serif;
   box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
 }
 
