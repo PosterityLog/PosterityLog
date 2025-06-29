@@ -5,117 +5,124 @@
   <title>Posterity Log – Submit a Report</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script defer>
-    async function selectCategory(category) {
-      document.getElementById('report_type').value = category;
-      document.getElementById('section-narrative').style.display = 'block';
-      showPromptForCategory(category);
+    async function selectIntent(type) {
+      document.getElementById('report_type').value = type;
+      document.getElementById('phase-2').style.display = 'block';
+      document.getElementById('intent-selection').style.display = 'none';
+      showPromptForCategory(type);
+      await suggestTags();
     }
 
     function showPromptForCategory(category) {
-      const intro = "Don't worry if you don’t know everything — just tell us what you can.";
+      const intro = "Don’t worry if you don’t know everything — just tell us what you can.";
       const prompts = {
-        'Collaborator': `Who are they? (Name, position, role)\nWhat did they do or say?\nWhen and where?`,
-        'Resister': `Who resisted, and how?\nWhat risks did they face?\nWhat was the outcome?`,
-        'Authoritarian Act': `What happened?\nWas it a raid, censorship, or abuse?\nWhen and where?`,
-        'Whistleblower': `What is about to happen?\nWho is involved?\nWhen and where?\nHow did you learn this?`
+        'Accountability Archive': `What happened? Who was involved? When and where?\nWhy does this matter for the historical record?`,
+        'Trusted Tip': `What is about to happen?\nWho is involved?\nWhen and where?\nHow did you learn this?`
       };
-      const box = document.getElementById('prompt-content');
-      box.textContent = `${intro}\n\n${prompts[category] || ''}`;
+      document.getElementById('prompt-content').textContent = `${intro}\n\n${prompts[category] || ''}`;
       document.getElementById('prompt-tag').style.display = 'block';
+      document.getElementById('phase-3').style.display = 'block';
     }
 
-    function closePromptTag() {
-      document.getElementById('prompt-tag').style.display = 'none';
-      document.getElementById('prompt-toggle').style.display = 'inline';
-    }
-
-    function reopenPromptTag() {
-      document.getElementById('prompt-tag').style.display = 'block';
-      document.getElementById('prompt-toggle').style.display = 'none';
-    }
-
-    async function confirmRedaction() {
-      const originalText = document.getElementById('narrative').value;
-      const response = await fetch('/redact', {
+    async function suggestTags() {
+      const text = document.getElementById('narrative').value;
+      if (!text.trim()) return;
+      const response = await fetch('/suggest_tags', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: originalText })
+        body: JSON.stringify({ text })
       });
       const data = await response.json();
-      document.getElementById('redacted-preview').textContent = data.redacted;
-      document.getElementById('redaction-section').classList.remove('d-none');
+      if (data.tags) {
+        document.getElementById('tags').value = data.tags.map(t => `#${t}`).join(' ');
+      }
+    }
+
+    function confirmRedaction() {
+      const originalText = document.getElementById('narrative').value;
+      const tagText = document.getElementById('tags').value;
+      const fullText = `${originalText}\n\n${tagText}`;
+      fetch('/redact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: fullText })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('redacted-preview').textContent = data.redacted;
+        document.getElementById('phase-4').style.display = 'block';
+        document.getElementById('phase-5').style.display = 'block';
+      });
     }
   </script>
 </head>
 <body>
   <div class="container">
-    <header class="hero">
+    <header class="hero text-center">
       <h1>Submit a Report</h1>
-      <p>Tell us what you know. Every submission helps preserve truth and document the reality of this era.</p>
+      <p>Whatever you know — it matters. Choose the path that fits your goal.</p>
     </header>
 
-    <section class="text-center">
-      <form>
-        <label><input type="radio" name="category" onclick="selectCategory('Collaborator')"> Expose a Collaborator</label><br>
-        <label><input type="radio" name="category" onclick="selectCategory('Resister')"> Document a Resister</label><br>
-        <label><input type="radio" name="category" onclick="selectCategory('Authoritarian Act')"> Report an Authoritarian Act</label><br>
-        <label><input type="radio" name="category" onclick="selectCategory('Whistleblower')"> Submit Time-Critical Info</label><br>
-        <label><input type="radio" name="category" onclick="selectCategory('Other')"> Anything else or I'm not sure</label>
-      </form>
+    <!-- Phase 1 -->
+    <section id="intent-selection" class="text-center">
+      <div onclick="selectIntent('Accountability Archive')" class="intent-card">
+        <h2>Accountability Archive</h2>
+        <p><strong>For the future reckoning.</strong><br>Your report remains sealed until it's safe — or until 4 July 2100.</p>
+      </div>
+      <div onclick="selectIntent('Trusted Tip')" class="intent-card">
+        <h2>Trusted Tip</h2>
+        <p><strong>To help right now.</strong><br>Only for time-sensitive, serious harm that may still be prevented.</p>
+      </div>
     </section>
 
-    <section id="section-narrative" style="display:none;">
-      <div id="prompt-tag">
-        <div style="position:relative">
-          <button onclick="closePromptTag()" style="position:absolute; top:0; right:0">✖</button>
-          <p id="prompt-content"></p>
-        </div>
+    <!-- Phase 2 -->
+    <section id="phase-2" style="display: none;">
+      <div id="prompt-tag" style="margin-top: 1rem; position: relative; background-image: url('/static/manila_tag.png'); background-size: contain; background-repeat: no-repeat; padding: 2rem; min-height: 150px;">
+        <p id="prompt-content" style="white-space: pre-line;"></p>
       </div>
-      <button id="prompt-toggle" class="btn" style="display:none" onclick="reopenPromptTag()">Show Prompts</button>
+      <label for="tags">Optional Tags</label>
+      <input type="text" id="tags" name="tags" placeholder="#civil_rights #collaborator #due_process">
+    </section>
 
+    <!-- Phase 3 -->
+    <section id="phase-3" style="display: none;">
       <form action="/submit" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="report_type" id="report_type" value="">
 
         <label for="narrative">Your Report</label>
-        <textarea id="narrative" name="narrative" required></textarea>
+        <textarea id="narrative" name="narrative" rows="10" required></textarea>
 
-        <label for="evidence">Upload Evidence (images, video, audio, PDF)</label>
+        <label for="evidence">Upload Evidence</label>
         <input type="file" name="evidence" id="evidence" multiple>
 
-        <button type="button" class="btn" onclick="confirmRedaction()">Ready to preview your report?</button>
+        <div class="text-center">
+          <button type="button" class="btn" onclick="confirmRedaction()">Ready to preview your report?</button>
+        </div>
 
-        <div id="redaction-section" class="d-none">
-          <h3>Redacted Preview:</h3>
+        <!-- Phase 4 -->
+        <div id="phase-4" style="display: none;">
+          <h3>Redacted Preview</h3>
           <pre id="redacted-preview" class="bg-light p-3"></pre>
-          <p class="text-muted">You can manually revise before submitting.</p>
         </div>
 
-        <div>
-          <h3>Publication Consent</h3>
-          <p>Your report may be included, in redacted form, in future aggregated statistics or sample excerpts. No identifying details will be published unless explicitly authorized. You are free to decline.</p>
-          <label><input type="checkbox" name="consent_public"> I consent to redacted excerpts being used for Posterity Log summaries or examples.</label>
+        <!-- Phase 5 -->
+        <div id="phase-5" style="display: none;">
+          <fieldset>
+            <legend>Before you submit</legend>
+            <label><input type="checkbox" name="consent_public"> I consent to anonymous public use</label><br>
+            <label><input type="checkbox" name="consent_contact"> I’m willing to be contacted for follow-up</label><br><br>
+
+            <label for="email">Email (optional)</label>
+            <input type="email" name="email" id="email"><br><br>
+
+            <label for="name">Name or pseudonym (optional)</label>
+            <input type="text" name="name" id="name">
+          </fieldset>
+
+          <div class="text-center" style="margin-top: 2rem;">
+            <button type="submit" class="btn">Submit Report</button>
+          </div>
         </div>
-
-        <div>
-          <h3>Contact Permission</h3>
-          <p>We may wish to contact you for clarification or to verify information. If you agree, please provide a secure email. ProtonMail and Signal are recommended for privacy.</p>
-          <label><input type="checkbox" name="consent_contact"> I agree to be contacted.</label>
-
-          <label for="name">Your Name (optional)</label>
-          <input type="text" name="name" id="name">
-
-          <label for="email">Your Email (optional)</label>
-          <input type="email" name="email" id="email">
-
-          <label for="copy">Would you like a copy of your report?</label>
-          <select id="copy" name="copy">
-            <option value="no">No copy needed</option>
-            <option value="yes-protonmail">Yes – Send via ProtonMail</option>
-            <option value="yes-signal">Yes – Send via Signal</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn">Submit Report</button>
       </form>
     </section>
 
