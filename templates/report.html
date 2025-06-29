@@ -3,47 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Posterity Log – Submit a Report</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    #prompt-tag {
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      width: 240px;
-      padding: 1.5rem;
-      font-size: 0.95rem;
-      background: url('/static/manila tag.png') no-repeat center center;
-      background-size: cover;
-      color: #3a2f1b;
-      border: 1px solid #c2a77e;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
-      display: none;
-      z-index: 999;
-    }
-    #prompt-toggle {
-      position: fixed;
-      top: 60px;
-      right: 20px;
-      z-index: 1000;
-    }
-    #prompt-tag p {
-      white-space: pre-line;
-      font-family: Georgia, serif;
-    }
-    @media (max-width: 768px) {
-      #prompt-tag {
-        position: fixed;
-        top: auto;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        width: 100%;
-        background-size: contain;
-        padding: 1rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script defer>
     async function selectCategory(category) {
       document.getElementById('report_type').value = category;
@@ -82,80 +42,64 @@
     }
   </script>
 </head>
-<body class="container py-5">
-  <button id="prompt-toggle" class="btn btn-sm btn-outline-secondary" onclick="togglePromptTag()">Toggle Prompts</button>
-  <div id="prompt-tag">
-    <p id="prompt-content"></p>
-  </div>
-
-  <header class="mb-5">
-    <h1 class="display-4 text-center">Choose Your Report Type</h1>
-    <p class="text-center">Help us preserve the truth. Choose the category that best fits your report.</p>
-  </header>
-
-  <div class="row mb-4">
-    <div class="col-md-6 mb-3">
-      <button class="btn btn-danger w-100" onclick="selectCategory('Collaborator')">Expose a Collaborator</button>
+<body>
+  <div class="container">
+    <button id="prompt-toggle" class="btn" onclick="togglePromptTag()">Toggle Prompts</button>
+    <div id="prompt-tag">
+      <p id="prompt-content"></p>
     </div>
-    <div class="col-md-6 mb-3">
-      <button class="btn btn-primary w-100" onclick="selectCategory('Resister')">Document a Resister</button>
-    </div>
-    <div class="col-md-6 mb-3">
-      <button class="btn btn-dark w-100" onclick="selectCategory('Authoritarian Act')">Report an Authoritarian Act</button>
-    </div>
-    <div class="col-md-6 mb-3">
-      <button class="btn btn-warning w-100" onclick="selectCategory('Whistleblower')">Submit Time-Critical Info</button>
-    </div>
-  </div>
 
-  <div id="report-form-section">
-    <form action="/submit" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="report_type" id="report_type" value="">
+    <header class="hero">
+      <h1>Submit a Report</h1>
+      <p>Tell us what you know. Every submission helps preserve truth and document the reality of this era.</p>
+    </header>
 
-      <div class="mb-3">
-        <label for="narrative" class="form-label">Your Report</label>
-        <textarea class="form-control" id="narrative" name="narrative" rows="6" required></textarea>
-      </div>
+    <section class="text-center">
+      <button class="btn" onclick="selectCategory('Collaborator')">Expose a Collaborator</button>
+      <button class="btn" onclick="selectCategory('Resister')">Document a Resister</button>
+      <button class="btn" onclick="selectCategory('Authoritarian Act')">Report an Authoritarian Act</button>
+      <button class="btn" onclick="selectCategory('Whistleblower')">Submit Time-Critical Info</button>
+    </section>
 
-      <div class="mb-3">
-        <label for="evidence" class="form-label">Upload Evidence (images, video, audio, PDF)</label>
-        <input type="file" class="form-control" name="evidence" id="evidence" multiple>
-      </div>
+    <section id="report-form-section">
+      <form action="/submit" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="report_type" id="report_type" value="">
 
-      <button type="button" class="btn btn-outline-secondary mb-3" onclick="confirmRedaction()">Preview Redacted Version</button>
+        <label for="narrative">Your Report</label>
+        <textarea id="narrative" name="narrative" required></textarea>
 
-      <div id="redaction-section" class="d-none">
-        <h5>Redacted Preview:</h5>
-        <pre id="redacted-preview" class="bg-light p-3"></pre>
-        <p class="text-muted">You can manually revise before submitting.</p>
-      </div>
+        <label for="evidence">Upload Evidence (images, video, audio, PDF)</label>
+        <input type="file" name="evidence" id="evidence" multiple>
 
-      <div class="form-check mb-2">
-        <input class="form-check-input" type="checkbox" name="consent_public" id="consent_public">
-        <label class="form-check-label" for="consent_public">
-          I agree to allow a redacted version of my report to be used for statistics and sample reports.
+        <button type="button" class="btn" onclick="confirmRedaction()">Preview Redacted Version</button>
+
+        <div id="redaction-section" class="d-none">
+          <h3>Redacted Preview:</h3>
+          <pre id="redacted-preview" class="bg-light p-3"></pre>
+          <p class="text-muted">You can manually revise before submitting.</p>
+        </div>
+
+        <label>
+          <input type="checkbox" name="consent_public"> Allow redacted report for statistics and examples
+        </label><br>
+
+        <label>
+          <input type="checkbox" name="consent_contact"> Willing to be contacted (provide email)
         </label>
-      </div>
 
-      <div class="form-check mb-4">
-        <input class="form-check-input" type="checkbox" name="consent_contact" id="consent_contact">
-        <label class="form-check-label" for="consent_contact">
-          I'm willing to be contacted (please provide email below).
-        </label>
-      </div>
+        <label for="name">Your Name (optional)</label>
+        <input type="text" name="name" id="name">
 
-      <div class="mb-3">
-        <label for="name" class="form-label">Your Name (optional)</label>
-        <input type="text" class="form-control" id="name" name="name">
-      </div>
+        <label for="email">Your Email (optional)</label>
+        <input type="email" name="email" id="email">
 
-      <div class="mb-3">
-        <label for="email" class="form-label">Your Email (optional)</label>
-        <input type="email" class="form-control" id="email" name="email">
-      </div>
+        <button type="submit" class="btn">Submit Report</button>
+      </form>
+    </section>
 
-      <button type="submit" class="btn btn-success">Submit Report</button>
-    </form>
+    <footer>
+      &copy; 2025 Posterity Log
+    </footer>
   </div>
 </body>
 </html>

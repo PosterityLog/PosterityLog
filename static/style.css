@@ -1,7 +1,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet">
 /* === Global === */
 body {
-  background-image: url('/static/paper-texture.jpg');
+  background-image: url('/static/aged-texture.jpg');
   background-size: cover;
   background-repeat: repeat;
   background-attachment: fixed;
@@ -10,6 +10,32 @@ body {
   margin: 0;
   padding: 3em 2em;
   line-height: 1.7;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+header.hero {
+  background-color: rgba(255, 255, 240, 0.85);
+  padding: 2em;
+  margin-bottom: 3em;
+  border-left: 12px solid #6d2c1c;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.1);
+}
+
+.hero h1 {
+  font-size: 3.5em;
+  margin-bottom: 0.25em;
+  color: #111;
+}
+
+.hero p {
+  font-size: 1.2em;
+  max-width: 70ch;
+  margin: 0 auto 1em auto;
+  text-align: center;
 }
 
 /* === Headings === */
@@ -31,7 +57,7 @@ h1 {
 
 h2.section-header {
   font-size: 2.2em;
-  color: #c0392b;
+  color: #7a0000;
   text-align: left;
 }
 
@@ -51,7 +77,7 @@ p, label {
 }
 
 /* === Buttons === */
-button {
+button, .btn {
   font-family: 'Impact', 'Arial Black', sans-serif;
   text-transform: uppercase;
   padding: 12px 24px;
@@ -61,17 +87,19 @@ button {
   letter-spacing: 1px;
   border: 2px solid transparent;
   cursor: pointer;
+  background-color: #6d2c1c;
+  color: white;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
+  transition: background-color 0.2s ease;
 }
 
-button.red { background-color: #c0392b; color: white; }
-button.blue { background-color: #4169e1; color: white; }
-button.black { background-color: #1c1c1c; color: white; }
-button.yellow { background-color: #f1c40f; color: #1c1c1c; }
+button:hover, .btn:hover {
+  background-color: #4b1f13;
+}
 
 /* === Form Elements === */
-textarea {
+textarea, input[type="text"], input[type="email"], select {
   width: 90%;
-  height: 200px;
   margin: 20px auto;
   display: block;
   padding: 12px;
@@ -111,4 +139,14 @@ hr {
   border-top: 2px solid #1a1a1a;
   margin: 2em auto;
   width: 80%;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.9em;
+  color: #333;
+  margin-top: 4em;
+  padding: 2em 0;
+  border-top: 1px solid #999;
+  background-color: rgba(255,255,240,0.4);
 }

@@ -6,10 +6,36 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h1>Report for Posterity</h1>
-  <p>Document injustice. Resist tyranny. Preserve the truth.</p>
-  <p>This site collects firsthand reports and evidence of collaboration, resistance, and authoritarian actions during this critical period of American history.</p>
-  <hr>
-  <button onclick="location.href='/report'" class="red">Submit a Report</button>
+  <div class="container">
+    <header class="hero">
+      <h1>Report for Posterity</h1>
+      <p>Document injustice. Resist tyranny. Preserve the truth.</p>
+      <p>This archive collects firsthand reports and documentary evidence of collaboration, resistance, and authoritarian actions during this critical period of American history.</p>
+      <div class="text-center">
+        <a href="/report" class="btn">Submit a Report</a>
+      </div>
+    </header>
+
+    <section>
+      <div class="grid">
+        <div>
+          <img src="/static/civil-rights-1.jpg" alt="Civil rights protest">
+          <div class="caption">Marching for integration, 1963</div>
+        </div>
+        <div>
+          <img src="/static/civil-rights-3.jpg" alt="Sit-in demonstration">
+          <div class="caption">Sit-in resistance, Greensboro</div>
+        </div>
+        <div>
+          <img src="/static/civil-rights-4.jpg" alt="Equal rights sign">
+          <div class="caption">Demands for equal treatment</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      &copy; 2025 Posterity Log. A civic record for future generations.
+    </footer>
+  </div>
 </body>
 </html>
