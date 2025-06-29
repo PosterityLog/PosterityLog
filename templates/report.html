@@ -5,54 +5,46 @@
   <title>Posterity Log – Submit a Report</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script defer>
-    async function selectIntent(type) {
-      document.getElementById('report_type').value = type;
-      document.getElementById('phase-2').style.display = 'block';
-      document.getElementById('intent-selection').style.display = 'none';
-      showPromptForCategory(type);
-      await suggestTags();
+    async function selectCategory(category) {
+      document.getElementById('report_type').value = category;
+      document.getElementById('report-form-section').scrollIntoView({ behavior: 'smooth' });
+      showPromptForCategory(category);
     }
 
     function showPromptForCategory(category) {
-      const intro = "Don’t worry if you don’t know everything — just tell us what you can.";
+      const intro = "Don't worry if you don’t know everything — just tell us what you can.";
       const prompts = {
-        'Accountability Archive': `What happened? Who was involved? When and where?\nWhy does this matter for the historical record?`,
-        'Trusted Tip': `What is about to happen?\nWho is involved?\nWhen and where?\nHow did you learn this?`
+        'Collaborator': `Who are they? (Name, position, role)\nWhat did they do or say?\nWhen and where?`,
+        'Resister': `Who resisted, and how?\nWhat risks did they face?\nWhat was the outcome?`,
+        'Authoritarian Act': `What happened?\nWas it a raid, censorship, or abuse?\nWhen and where?`,
+        'Whistleblower': `What is about to happen?\nWho is involved?\nWhen and where?\nHow did you learn this?`,
+        'Other': `Just describe what you want us to know.`
       };
-      document.getElementById('prompt-content').textContent = `${intro}\n\n${prompts[category] || ''}`;
+      const box = document.getElementById('prompt-content');
+      box.textContent = `${intro}\n\n${prompts[category] || ''}`;
       document.getElementById('prompt-tag').style.display = 'block';
-      document.getElementById('phase-3').style.display = 'block';
     }
 
-    async function suggestTags() {
-      const text = document.getElementById('narrative').value;
-      if (!text.trim()) return;
-      const response = await fetch('/suggest_tags', {
+    function closePrompt() {
+      document.getElementById('prompt-tag').style.display = 'none';
+      document.getElementById('prompt-toggle').style.display = 'inline-block';
+    }
+
+    function reopenPrompt() {
+      document.getElementById('prompt-tag').style.display = 'block';
+      document.getElementById('prompt-toggle').style.display = 'none';
+    }
+
+    async function confirmRedaction() {
+      const originalText = document.getElementById('narrative').value;
+      const response = await fetch('/redact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
+        body: JSON.stringify({ text: originalText })
       });
       const data = await response.json();
-      if (data.tags) {
-        document.getElementById('tags').value = data.tags.map(t => `#${t}`).join(' ');
-      }
-    }
-
-    function confirmRedaction() {
-      const originalText = document.getElementById('narrative').value;
-      const tagText = document.getElementById('tags').value;
-      const fullText = `${originalText}\n\n${tagText}`;
-      fetch('/redact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: fullText })
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('redacted-preview').textContent = data.redacted;
-        document.getElementById('phase-4').style.display = 'block';
-        document.getElementById('phase-5').style.display = 'block';
-      });
+      document.getElementById('redacted-preview').textContent = data.redacted;
+      document.getElementById('redaction-section').classList.remove('d-none');
     }
   </script>
 </head>
@@ -60,68 +52,65 @@
   <div class="container">
     <header class="hero text-center">
       <h1>Submit a Report</h1>
-      <p>Whatever you know — it matters. Choose the path that fits your goal.</p>
+      <p>Tell us what you know. Every submission helps preserve truth and document the reality of this era.</p>
     </header>
 
-    <!-- Phase 1 -->
-    <section id="intent-selection" class="text-center">
-      <div onclick="selectIntent('Accountability Archive')" class="intent-card">
-        <h2>Accountability Archive</h2>
-        <p><strong>For the future reckoning.</strong><br>Your report remains sealed until it's safe — or until 4 July 2100.</p>
-      </div>
-      <div onclick="selectIntent('Trusted Tip')" class="intent-card">
-        <h2>Trusted Tip</h2>
-        <p><strong>To help right now.</strong><br>Only for time-sensitive, serious harm that may still be prevented.</p>
-      </div>
+    <section class="text-center">
+      <h2>Select a category</h2>
+      <form>
+        <label><input type="radio" name="category" onclick="selectCategory('Collaborator')"> Expose a Collaborator</label><br>
+        <label><input type="radio" name="category" onclick="selectCategory('Resister')"> Document a Resister</label><br>
+        <label><input type="radio" name="category" onclick="selectCategory('Authoritarian Act')"> Report an Authoritarian Act</label><br>
+        <label><input type="radio" name="category" onclick="selectCategory('Whistleblower')"> Submit Time-Critical Info</label><br>
+        <label><input type="radio" name="category" onclick="selectCategory('Other')"> Anything else or I'm not sure</label>
+      </form>
     </section>
 
-    <!-- Phase 2 -->
-    <section id="phase-2" style="display: none;">
-      <div id="prompt-tag" style="margin-top: 1rem; position: relative; background-image: url('/static/manila_tag.png'); background-size: contain; background-repeat: no-repeat; padding: 2rem; min-height: 150px;">
-        <p id="prompt-content" style="white-space: pre-line;"></p>
-      </div>
-      <label for="tags">Optional Tags</label>
-      <input type="text" id="tags" name="tags" placeholder="#civil_rights #collaborator #due_process">
-    </section>
+    <div id="prompt-tag" style="display: none; margin-top: 1rem; position: relative; background-image: url('/static/manila_tag.png'); background-size: contain; background-repeat: no-repeat; padding: 2rem; min-height: 150px;">
+      <button style="position: absolute; top: 10px; right: 10px;" onclick="closePrompt()">✖</button>
+      <p id="prompt-content" style="white-space: pre-line;"></p>
+    </div>
+    <div class="text-center" style="margin: 1rem 0;">
+      <button id="prompt-toggle" class="btn" style="display: none;" onclick="reopenPrompt()">Show Prompt Again</button>
+    </div>
 
-    <!-- Phase 3 -->
-    <section id="phase-3" style="display: none;">
+    <section id="report-form-section">
       <form action="/submit" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="report_type" id="report_type" value="">
 
         <label for="narrative">Your Report</label>
         <textarea id="narrative" name="narrative" rows="10" required></textarea>
 
-        <label for="evidence">Upload Evidence</label>
+        <label for="evidence">Upload Evidence (images, video, audio, PDF)</label>
         <input type="file" name="evidence" id="evidence" multiple>
 
-        <div class="text-center">
-          <button type="button" class="btn" onclick="confirmRedaction()">Ready to preview your report?</button>
-        </div>
+        <button type="button" class="btn" onclick="confirmRedaction()">Ready to preview your report?</button>
 
-        <!-- Phase 4 -->
-        <div id="phase-4" style="display: none;">
+        <div id="redaction-section" class="d-none" style="margin-top: 2rem;">
           <h3>Redacted Preview</h3>
           <pre id="redacted-preview" class="bg-light p-3"></pre>
+          <p class="text-muted">You can manually revise before submitting.</p>
         </div>
 
-        <!-- Phase 5 -->
-        <div id="phase-5" style="display: none;">
-          <fieldset>
-            <legend>Before you submit</legend>
-            <label><input type="checkbox" name="consent_public"> I consent to anonymous public use</label><br>
-            <label><input type="checkbox" name="consent_contact"> I’m willing to be contacted for follow-up</label><br><br>
+        <fieldset style="margin-top: 2rem;">
+          <legend>Before you submit</legend>
 
-            <label for="email">Email (optional)</label>
-            <input type="email" name="email" id="email"><br><br>
+          <p><strong>Public use consent:</strong> If you check this box, your redacted report may be quoted anonymously in future reports, media, or archives. This helps us show the world what really happened, without identifying you.</p>
+          <label><input type="checkbox" name="consent_public"> I consent to my redacted report being used anonymously for public awareness</label><br><br>
 
-            <label for="name">Name or pseudonym (optional)</label>
-            <input type="text" name="name" id="name">
-          </fieldset>
+          <p><strong>Contact consent:</strong> If you're willing to be contacted for clarification or follow-up, please enter your email and check this box. We won’t share your details without permission.</p>
+          <label><input type="checkbox" name="consent_contact"> I’m willing to be contacted</label><br><br>
 
-          <div class="text-center" style="margin-top: 2rem;">
-            <button type="submit" class="btn">Submit Report</button>
-          </div>
+          <p><strong>Would you like a copy of your report?</strong> We recommend using a secure method like Signal or ProtonMail if possible.</p>
+          <label for="email">Email (optional)</label>
+          <input type="email" name="email" id="email"><br><br>
+
+          <label for="name">Name or pseudonym (optional)</label>
+          <input type="text" name="name" id="name">
+        </fieldset>
+
+        <div class="text-center" style="margin-top: 2rem;">
+          <button type="submit" class="btn">Submit Report</button>
         </div>
       </form>
     </section>
