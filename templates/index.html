@@ -2,101 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Posterity Log – Submit a Report</title>
+  <title>Posterity Log</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script defer>
-    async function selectCategory(category) {
-      document.getElementById('report_type').value = category;
-      document.getElementById('report-form-section').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    async function confirmRedaction() {
-      const originalText = document.getElementById('narrative').value;
-
-      // Call OpenAI API to generate redacted text (mocked here)
-      const response = await fetch('/redact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: originalText })
-      });
-
-      const data = await response.json();
-      document.getElementById('redacted-preview').textContent = data.redacted;
-      document.getElementById('redaction-section').classList.remove('d-none');
-    }
-  </script>
 </head>
-<body class="container py-5">
-  <header class="mb-5">
-    <h1 class="display-4 text-center">Choose Your Report Type</h1>
-    <p class="text-center">Help us preserve the truth. Choose the category that best fits your report.</p>
-  </header>
-
-  <div class="row mb-4">
-    <div class="col-md-6 mb-3">
-      <button class="btn btn-danger w-100" onclick="selectCategory('Collaborator')">Expose a Collaborator</button>
-    </div>
-    <div class="col-md-6 mb-3">
-      <button class="btn btn-primary w-100" onclick="selectCategory('Resister')">Document a Resister</button>
-    </div>
-    <div class="col-md-6 mb-3">
-      <button class="btn btn-dark w-100" onclick="selectCategory('Authoritarian Act')">Report an Authoritarian Act</button>
-    </div>
-    <div class="col-md-6 mb-3">
-      <button class="btn btn-warning w-100" onclick="selectCategory('Whistleblower')">Submit Time-Critical Info</button>
-    </div>
-  </div>
-
-  <div id="report-form-section">
-    <form action="/submit" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="report_type" id="report_type" value="">
-
-      <div class="mb-3">
-        <label for="narrative" class="form-label">Your Report</label>
-        <textarea class="form-control" id="narrative" name="narrative" rows="6" required></textarea>
-      </div>
-
-      <div class="mb-3">
-        <label for="evidence" class="form-label">Upload Evidence (images, video, audio, PDF)</label>
-        <input type="file" class="form-control" name="evidence" id="evidence" multiple>
-      </div>
-
-      <button type="button" class="btn btn-outline-secondary mb-3" onclick="confirmRedaction()">Preview Redacted Version</button>
-
-      <div id="redaction-section" class="d-none">
-        <h5>Redacted Preview:</h5>
-        <pre id="redacted-preview" class="bg-light p-3"></pre>
-        <p class="text-muted">You can manually revise before submitting.</p>
-      </div>
-
-      <div class="form-check mb-2">
-        <input class="form-check-input" type="checkbox" name="consent_public" id="consent_public">
-        <label class="form-check-label" for="consent_public">
-          I agree to allow a redacted version of my report to be used for statistics and sample reports.
-        </label>
-      </div>
-
-      <div class="form-check mb-4">
-        <input class="form-check-input" type="checkbox" name="consent_contact" id="consent_contact">
-        <label class="form-check-label" for="consent_contact">
-          I'm willing to be contacted (please provide email below).
-        </label>
-      </div>
-
-      <div class="mb-3">
-        <label for="name" class="form-label">Your Name (optional)</label>
-        <input type="text" class="form-control" id="name" name="name">
-      </div>
-
-      <div class="mb-3">
-        <label for="email" class="form-label">Your Email (optional)</label>
-        <input type="email" class="form-control" id="email" name="email">
-      </div>
-
-      <button type="submit" class="btn btn-success">Submit Report</button>
-    </form>
-  </div>
+<body>
+  <h1>Report for Posterity</h1>
+  <p>Document injustice. Resist tyranny. Preserve the truth.</p>
+  <p>This site collects firsthand reports and evidence of collaboration, resistance, and authoritarian actions during this critical period of American history.</p>
+  <hr>
+  <button onclick="location.href='/report'" class="red">Submit a Report</button>
 </body>
 </html>

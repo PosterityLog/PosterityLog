@@ -59,9 +59,13 @@ def close_db(exc):
 
 # ─── Routes ────────────────────────────────────────────────────────────────────
 
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 @app.route('/report')
-def form():
-    return render_template("report.html")
+def report():
+    return render_template('report.html')
 
 @app.route('/submit', methods=['POST'])
 def submit():
