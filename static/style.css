@@ -1,3 +1,4 @@
+
 /* Updated Posterity Log stylesheet */
 
 body {
@@ -74,39 +75,37 @@ img {
 .text-center {
   text-align: center;
 }
-.intent-card {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 2px solid #bca98f;
-  padding: 1.5rem;
-  margin: 1.5rem auto;
-  max-width: 500px;
-  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
-  cursor: pointer;
-  font-family: Spectral, serif;
-  transition: transform 0.2s ease-in-out;
-}
-
-.intent-card:hover {
-  transform: scale(1.02);
-  background-color: rgba(250, 244, 230, 0.95);
-}
-
-.intent-card h2 {
-  font-family: Oswald, sans-serif;
-  text-transform: uppercase;
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
-  color: #3c1f0e;
-}
-
-.intent-card p {
-  font-size: 1rem;
-  color: #4a3c2d;
-}
 
 footer {
   margin-top: 2rem;
   text-align: center;
   font-size: 0.85rem;
   color: #5c4a3d;
+}
+
+.manila-tag {
+  margin-top: 1rem;
+  position: relative;
+  background-image: url('/static/manila_tag.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 2rem;
+  min-height: 150px;
+  font-family: 'Special Elite', monospace;
+  color: #2c1d0f;
+  border: 1px solid #d3c7a3;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  white-space: pre-line;
+}
+
+.tag-helper {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #4a3a2d;
+  margin-top: 0.2rem;
+}
+
+fieldset label {
+  display: block;
+  margin: 0.5rem 0;
 }
