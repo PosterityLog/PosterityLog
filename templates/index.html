@@ -6,30 +6,33 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
+  <div class="container dark-theme">
     <header class="hero">
-      <h1>Report for Posterity</h1>
-      <p>Document injustice. Resist tyranny. Preserve the truth.</p>
-      <p>This archive collects firsthand reports and documentary evidence of collaboration, resistance, and authoritarian actions during this critical period of American history.</p>
-      <div class="text-center">
-        <a href="/report" class="btn">Submit a Report</a>
+      <div class="hero-overlay">
+        <h1>Posterity Log</h1>
+        <p class="tagline">This era will end, and there will be a time for justice.<br>Your memories matter.</p>
+        <p class="intro">
+          This civic archive collects reports and documents from everyday Americans — victims, witnesses, resisters. 
+          What you record now may help future investigators, historians, and those seeking accountability.
+        </p>
+        <div class="text-center">
+          <a href="/report" class="btn">Submit a Report</a>
+        </div>
       </div>
     </header>
 
-    <section>
-      <div class="grid">
-        <div>
-          <img src="/static/civil-rights-1.jpg" alt="Civil rights protest">
-          <div class="caption">Marching for integration, 1963</div>
-        </div>
-        <div>
-          <img src="/static/civil-rights-3.jpg" alt="Sit-in demonstration">
-          <div class="caption">Sit-in resistance, Greensboro</div>
-        </div>
-        <div>
-          <img src="/static/civil-rights-4.jpg" alt="Equal rights sign">
-          <div class="caption">Demands for equal treatment</div>
-        </div>
+    <section class="photo-grid">
+      <div>
+        <img src="/static/civil-rights-3.jpg" alt="Sit-in demonstration">
+        <div class="caption">Sit-in resistance, Greensboro</div>
+      </div>
+      <div>
+        <img src="/static/civil-rights-4.jpg" alt="Equal rights sign">
+        <div class="caption">Demands for equal treatment</div>
+      </div>
+      <div>
+        <img src="/static/civil-rights-overlay.jpg" alt="Historic confrontation">
+        <div class="caption">Civil Rights struggle, archived</div>
       </div>
     </section>
 
