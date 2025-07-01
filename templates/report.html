@@ -84,7 +84,36 @@
       <label for="tags">Optional Tags</label>
       <input type="text" id="tags" name="tags" placeholder="#civil_rights #collaborator #due_process">
       <div class="tag-helper">Optional: add hashtags to help categorize your report (e.g. #civil_rights, #due_process).</div>
-    </section>
+    </section><!-- Phase 1: Choose your path -->
+<section id="intent-selection" class="flex-row gap-2" style="margin-bottom: 2rem;">
+  <div class="intent-card wide">
+    <h2>Accountability Archive</h2>
+    <p><strong>🔒 For the future reckoning.</strong></p>
+    <p>Submit reports of collaboration, abuse of power, or acts of resistance. Your report remains sealed until it's safe — or until 4 July 2100.</p>
+    <button onclick="selectIntent('Accountability Archive')" class="btn">Submit report to the Accountability Archive</button>
+    <div id="prompt-tag-archive" class="manila-tag" style="display: none;">
+      <p id="prompt-content-archive"></p>
+    </div>
+  </div>
+
+  <div class="intent-card wide">
+    <h2>Trusted Tip</h2>
+    <p><strong>⚠️ For immediate action.</strong></p>
+    <p>Submit tips about time-sensitive events (e.g., planned raids or abuses) that might still be prevented. These are reviewed quickly and may be shared sooner.</p>
+    <button onclick="selectIntent('Trusted Tip')" class="btn">Submit a Trusted Tip</button>
+    <div id="prompt-tag-tip" class="manila-tag" style="display: none;">
+      <p id="prompt-content-tip"></p>
+    </div>
+  </div>
+</section>
+
+<!-- Phase 2: Tags -->
+<section id="phase-2" style="display: none;">
+  <label for="tags">Optional Tags</label>
+  <input type="text" id="tags" name="tags" placeholder="#civil_rights #collaborator #due_process">
+  <div class="tag-helper">Optional: add hashtags to help categorize your report (e.g. #civil_rights, #due_process).</div>
+</section>
+
 
     <!-- Phase 3 -->
     <section id="phase-3" style="display: none;">
