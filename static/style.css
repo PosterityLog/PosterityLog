@@ -130,22 +130,27 @@ footer {
   font-size: 0.85rem;
   color: #999;
 }
+
 .call-to-action {
-  margin: 3rem 0;
+  margin: 3rem auto;
+  text-align: center;
 }
 
 .btn-light {
-  background-color: #e8d7c4;
+  background-color: #e7d9c5;
   color: #1a120c;
-  padding: 0.75em 1.5em;
+  padding: 1em 2em;
   border: none;
   font-weight: bold;
   text-transform: uppercase;
   font-family: 'Inter', sans-serif;
-  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   transition: background-color 0.2s ease;
+  display: inline-block;
+  text-decoration: none;
 }
 
 .btn-light:hover {
-  background-color: #d6c2a8;
+  background-color: #d3c2a9;
 }
