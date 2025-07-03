@@ -130,3 +130,22 @@ footer {
   font-size: 0.85rem;
   color: #999;
 }
+.call-to-action {
+  margin: 3rem 0;
+}
+
+.btn-light {
+  background-color: #e8d7c4;
+  color: #1a120c;
+  padding: 0.75em 1.5em;
+  border: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-light:hover {
+  background-color: #d6c2a8;
+}
