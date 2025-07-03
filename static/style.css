@@ -41,25 +41,18 @@ a:hover {
   box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
 
-/* Hero section */
 .hero {
-  position: relative;
-  background-image: url('/static/civil-rights-3.jpg');
-  background-size: cover;
-  background-position: center;
-  height: 500px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: #111;  /* or your texture */
+  padding: 4rem 2rem;
 }
 
 .hero-overlay {
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 3rem;
-  text-align: center;
-  max-width: 700px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.6); /* optional semi-transparent layer */
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
+
 
 .tagline {
   font-size: 1.4rem;
@@ -132,6 +125,7 @@ footer {
 }
 
 .call-to-action {
+  margin-top: 2rem;
   margin: 3rem 0;
   text-align: center;
 }
