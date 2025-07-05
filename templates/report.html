@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,53 +5,35 @@
   <title>Posterity Log – Submit a Report</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script defer>
-    async function selectIntent(type) {
+    function selectIntent(type) {
       document.getElementById('report_type').value = type;
       document.getElementById('phase-2').style.display = 'block';
       document.getElementById('intent-selection').style.display = 'none';
       showPromptForCategory(type);
-      await suggestTags();
     }
 
     function showPromptForCategory(category) {
       const intro = "Don’t worry if you don’t know everything — just tell us what you can.";
       const prompts = {
         'Accountability Archive': "What happened? Who was involved? When and where?\nWhy does this matter for the historical record?",
-        'Trusted Tip': "What is about to happen?\nWho is involved?\nWhen and where?\nHow did you learn this?"
+        'Actionable Intel': "What is about to happen?\nWho is involved?\nWhen and where?\nHow did you learn this?"
       };
       document.getElementById('prompt-content').textContent = `${intro}\n\n${prompts[category] || ''}`;
       document.getElementById('prompt-tag').style.display = 'block';
-      document.getElementById('phase-3').style.display = 'block';
-    }
-
-    async function suggestTags() {
-      const text = document.getElementById('narrative').value;
-      if (!text.trim()) return;
-      const response = await fetch('/suggest_tags', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
-      });
-      const data = await response.json();
-      if (data.tags) {
-        document.getElementById('tags').value = data.tags.map(t => `#${t}`).join(' ');
-      }
     }
 
     function confirmRedaction() {
       const originalText = document.getElementById('narrative').value;
-      const tagText = document.getElementById('tags').value;
-      const fullText = `${originalText}\n\n${tagText}`;
       fetch('/redact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: fullText })
+        body: JSON.stringify({ text: originalText })
       })
       .then(res => res.json())
       .then(data => {
         document.getElementById('redacted-preview').textContent = data.redacted;
+        document.getElementById('phase-3').style.display = 'block';
         document.getElementById('phase-4').style.display = 'block';
-        document.getElementById('phase-5').style.display = 'block';
       });
     }
   </script>
@@ -64,39 +45,29 @@
       <p>Whatever you know — it matters. Choose the path that fits your goal.</p>
     </header>
 
-<!-- Phase 1: Choose your path -->
-<section id="intent-selection" class="flex-row gap-2" style="margin-bottom: 2rem;">
-  <div class="intent-card wide">
-    <h2>Accountability Archive</h2>
-    <p><strong>🔒 For the future reckoning.</strong></p>
-    <p>Submit reports of collaboration, abuse of power, or acts of resistance. Your report remains sealed until it's safe — or until 4 July 2100.</p>
-    <button onclick="selectIntent('Accountability Archive')" class="btn">Submit report to the Accountability Archive</button>
-    <div id="prompt-tag-archive" class="manila-tag" style="display: none;">
-      <p id="prompt-content-archive"></p>
-    </div>
-  </div>
+    <!-- Phase 1: Choose your path -->
+    <section id="intent-selection" class="text-center" style="margin-bottom: 2rem;">
+      <div class="intent-card wide" style="margin-bottom: 2rem;">
+        <h2>Accountability Archive</h2>
+        <p><strong>For the future reckoning.</strong></p>
+        <p>Submit reports of collaboration, abuse of power, or acts of resistance. Your report remains sealed until it's safe — or until 4 July 2100.</p>
+        <button onclick="selectIntent('Accountability Archive')" class="btn">Submit report to the Accountability Archive</button>
+      </div>
 
-  <div class="intent-card wide">
-    <h2>Trusted Tip</h2>
-    <p><strong>⚠️ For immediate action.</strong></p>
-    <p>Submit tips about time-sensitive events (e.g., planned raids or abuses) that might still be prevented. These are reviewed quickly and may be shared sooner.</p>
-    <button onclick="selectIntent('Trusted Tip')" class="btn">Submit a Trusted Tip</button>
-    <div id="prompt-tag-tip" class="manila-tag" style="display: none;">
-      <p id="prompt-content-tip"></p>
-    </div>
-  </div>
-</section>
+      <div class="intent-card wide">
+        <h2>Actionable Intel</h2>
+        <p><strong>For immediate action.</strong></p>
+        <p>Submit tips about time-sensitive events (e.g., planned abuses) that might still be prevented. These are reviewed quickly and may be shared sooner.</p>
+        <button onclick="selectIntent('Actionable Intel')" class="btn">Submit Actionable Intel</button>
+      </div>
+    </section>
 
-<!-- Phase 2: Tags -->
-<section id="phase-2" style="display: none;">
-  <label for="tags">Optional Tags</label>
-  <input type="text" id="tags" name="tags" placeholder="#civil_rights #collaborator #due_process">
-  <div class="tag-helper">Optional: add hashtags to help categorize your report (e.g. #civil_rights, #due_process).</div>
-</section>
+    <!-- Phase 2: Narrative + Upload -->
+    <section id="phase-2" style="display: none;">
+      <div id="prompt-tag" class="manila-tag">
+        <p id="prompt-content"></p>
+      </div>
 
-
-    <!-- Phase 3 -->
-    <section id="phase-3" style="display: none;">
       <form action="/submit" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="report_type" id="report_type" value="">
 
@@ -110,14 +81,14 @@
           <button type="button" class="btn" onclick="confirmRedaction()">Ready to preview your report?</button>
         </div>
 
-        <!-- Phase 4 -->
-        <div id="phase-4" style="display: none;">
+        <!-- Phase 3: Redacted Preview -->
+        <div id="phase-3" style="display: none;">
           <h3>Redacted Preview</h3>
           <pre id="redacted-preview" class="bg-light p-3"></pre>
         </div>
 
-        <!-- Phase 5 -->
-        <div id="phase-5" style="display: none;">
+        <!-- Phase 4: Consent & Submit -->
+        <div id="phase-4" style="display: none;">
           <fieldset>
             <legend>Before you submit</legend>
             <label><input type="checkbox" name="consent_public"> I consent to anonymous public use</label>
