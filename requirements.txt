@@ -206,8 +206,8 @@ numexpr @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/numexpr_
 numpy @ file:///C:/b/abs_c1ywpu18ar/croot/numpy_and_numpy_base_1708638681471/work/dist/numpy-1.26.4-cp312-cp312-win_amd64.whl#sha256=becc06674317799ad0165a939a7613809d0bee9bd328a1e4308c57c39cacf08c
 numpydoc @ file:///C:/b/abs_bbspp5l8vu/croot/numpydoc_1718279185573/work
 onnxruntime==1.22.0
-openai==1.93.0
-opencv-python-headless==4.11.0.86
+openai>=1.10.0
+pencv-python-headless==4.11.0.86
 openpyxl @ file:///C:/b/abs_0e6ca21lac/croot/openpyxl_1721752965859/work
 orjson==3.10.18
 overrides @ file:///C:/Users/dev-admin/perseverance-python-buildout/croot/overrides_1701806336503/work
