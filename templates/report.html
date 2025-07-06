@@ -63,23 +63,27 @@
     </section>
 
     <!-- Phase 2: Narrative + Upload -->
-    <section id="phase-2" style="display: none;">
-      <div id="prompt-tag" class="manila-tag">
-        <p id="prompt-content"></p>
-      </div>
+<section id="phase-2" style="display: none;">
+  <div id="prompt-tag" class="manila-tag">
+    <p id="prompt-content"></p>
+  </div>
 
-      <form action="/submit" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="report_type" id="report_type" value="">
+  <form action="/submit" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="report_type" id="report_type" value="">
 
-        <label for="narrative">Your Report</label>
-        <textarea id="narrative" name="narrative" rows="10" required></textarea>
+    <label for="narrative">Your Report</label>
+    <textarea id="narrative" name="narrative" rows="12" required style="width: 100%;"></textarea>
 
-        <label for="evidence">Upload Evidence</label>
-        <input type="file" name="evidence" id="evidence" multiple>
+    <hr style="margin: 3rem 0; border: 0; border-top: 1px solid #888;">
 
-        <div class="text-center">
-          <button type="button" class="btn" onclick="confirmRedaction()">Ready to preview your report?</button>
-        </div>
+    <h3>Upload Evidence (Optional)</h3>
+    <p>You can attach screenshots, documents, or anything that supports your report.</p>
+    <input type="file" name="evidence" id="evidence" multiple>
+
+    <div class="text-center" style="margin-top: 2rem;">
+      <button type="button" class="btn" onclick="confirmRedaction()">Ready to preview your report?</button>
+    </div>
+
 
         <!-- Phase 3: Redacted Preview -->
         <div id="phase-3" style="display: none;">
@@ -100,6 +104,16 @@
             <label for="name">Name or pseudonym (optional)</label>
             <input type="text" name="name" id="name">
           </fieldset>
+<hr style="margin: 3rem 0; border: 0; border-top: 1px solid #888;">
+
+<h3>Get a Digital Receipt (Optional)</h3>
+<p>Want a copy of what you submitted? We can send you a digital receipt. For privacy, we recommend using <strong>Signal</strong> for text or <strong>ProtonMail</strong> for email — but any contact info will work.</p>
+
+<label for="receipt_signal">Signal number (optional)</label>
+<input type="text" name="receipt_signal" id="receipt_signal" placeholder="+1... or local equivalent">
+
+<label for="receipt_email">Email for receipt (optional)</label>
+<input type="email" name="receipt_email" id="receipt_email" placeholder="you@protonmail.com">
 
           <div class="text-center" style="margin-top: 2rem;">
             <button type="submit" class="btn">Submit Report</button>

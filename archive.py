@@ -3,11 +3,12 @@ import uuid
 import json
 import sqlite3
 from datetime import datetime
-from flask import Flask, request, g, render_template, redirect
+from flask import Flask, request, g, render_template, redirect, jsonify
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
 import boto3
 from botocore.exceptions import NoCredentialsError
-from dotenv import load_dotenv
+import openai
 
 # ─── Load Config ───────────────────────────────────────────────────────────────
 load_dotenv()
@@ -16,6 +17,7 @@ DB_PATH = 'posteritylog.db'
 S3_BUCKET = "posteritylog-screenshots"
 
 os.makedirs('tmp', exist_ok=True)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # ─── AWS S3 Uploader ───────────────────────────────────────────────────────────
 def upload_to_s3(local_path, s3_filename):
@@ -46,7 +48,9 @@ def get_db():
               consent_contact INTEGER,
               consent_public INTEGER,
               file_urls TEXT,
-              submitted_at TEXT
+              submitted_at TEXT,
+              receipt_signal TEXT,
+              receipt_email TEXT
             )
         ''')
     return db
@@ -80,6 +84,8 @@ def submit():
     email           = request.form.get('email', '')
     consent_contact = 1 if request.form.get('consent_contact') == 'on' else 0
     consent_public  = 1 if request.form.get('consent_public') == 'on' else 0
+    receipt_signal  = request.form.get('receipt_signal', '')
+    receipt_email   = request.form.get('receipt_email', '')
 
     # Handle multiple file uploads
     file_urls = []
@@ -99,29 +105,20 @@ def submit():
         INSERT INTO submissions (
           id, report_type, subtype, narrative,
           name, email, consent_contact, consent_public,
-          file_urls, submitted_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          file_urls, submitted_at,
+          receipt_signal, receipt_email
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         uid, report_type, subtype, narrative,
         name, email, consent_contact, consent_public,
-        json.dumps(file_urls), datetime.utcnow().isoformat()
+        json.dumps(file_urls), datetime.utcnow().isoformat(),
+        receipt_signal, receipt_email
     ))
 
     db.commit()
     return f"✅ Thank you for your submission. Your report ID is {uid}."
 
-# ─── Launch ────────────────────────────────────────────────────────────────────
-
-if __name__ == '__main__':
-    app.run(
-        debug=True,
-        port=5000,
-        host='0.0.0.0'
-    )
-from flask import jsonify
-import openai
-
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# ─── Redaction Endpoint ────────────────────────────────────────────────────────
 
 @app.route('/redact', methods=['POST'])
 def redact():
@@ -139,7 +136,7 @@ def redact():
 
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",  # or "gpt-3.5-turbo"
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": "You redact sensitive information for archival reports."},
                 {"role": "user", "content": prompt}
